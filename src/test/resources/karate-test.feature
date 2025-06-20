@@ -22,3 +22,66 @@ Feature: Marvel Api test
       | id  | statusCode |
       | 129 | 200        |
       | 1   | 404        |
+
+  @CreateCharacter
+  Scenario: Create a new character (successful)
+    * def character =
+    """
+    {
+      "name": "Iron Man New",
+      "alterego": "Tony Stark",
+      "description": "Genius billionaire",
+      "powers": ["Armor", "Flight"]
+    }
+    """
+    Given path 'characters'
+    And request character
+    And header Content-Type = 'application/json'
+    When method POST
+    Then status 201
+    * print response
+    * match response contains { id: '#notnull' }
+    * match response.name == 'Iron Man New'
+    * match response.alterego == 'Tony Stark'
+    * match response.description == 'Genius billionaire'
+    * match response.powers == ['Armor', 'Flight']
+
+  @CreateDuplicatedCharacter
+  Scenario: Create a character with duplicated name
+    * def duplicatedCharacter =
+    """
+    {
+      "name": "Iron Man",
+      "alterego": "Otro",
+      "description": "Otro",
+      "powers": ["Armor"]
+    }
+    """
+
+    Given path 'characters'
+    And request duplicatedCharacter
+    And header Content-Type = 'application/json'
+    When method POST
+    Then status 400
+    * print response
+    * match response contains { error: 'Character name already exists' }
+
+
+  @CreateInvalidCharacter
+  Scenario: Create a character with missing required fields
+    * def invalidCharacter =
+    """
+    {
+      "name": "",
+    }
+    """
+    Given path 'characters'
+    And request invalidCharacter
+    And header Content-Type = 'application/json'
+    When method POST
+    Then status 400
+    * print response
+    * match response contains { name: 'Name is required' }
+    * match response contains { alterego: 'Alterego is required' }
+    * match response contains { description: 'Description is required' }
+    * match response contains { powers: 'Powers are required' }
