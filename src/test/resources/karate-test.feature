@@ -85,3 +85,47 @@ Feature: Marvel Api test
     * match response contains { alterego: 'Alterego is required' }
     * match response contains { description: 'Description is required' }
     * match response contains { powers: 'Powers are required' }
+
+  @UpdateCharacter
+  Scenario: Update a character (successful)
+    * def characterId = 345
+    * def updatedCharacter =
+    """
+    {
+      "name": "Iron Man New",
+      "alterego": "Tony Stark",
+      "description": "Updated description",
+      "powers": ["Armor", "Flight"]
+    }
+    """
+
+    Given path 'characters', characterId
+    And request updatedCharacter
+    And header Content-Type = 'application/json'
+    When method PUT
+    Then status 200
+    * print response
+    * match response.id == characterId
+    * match response.description == 'Updated description'
+
+
+  @UpdateNotExistentCharacter
+  Scenario: Update when not existent a character
+    * def character =
+    """
+    {
+      "name": "Iron Man New",
+      "alterego": "Tony Stark",
+      "description": "Updated description",
+      "powers": ["Armor", "Flight"]
+    }
+    """
+
+    Given path 'characters', '999'
+    And request character
+    And header Content-Type = 'application/json'
+    When method PUT
+    Then status 404
+    * print response
+    * match response contains { error: 'Character not found' }
+
