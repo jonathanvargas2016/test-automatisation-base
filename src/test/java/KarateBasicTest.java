@@ -8,7 +8,7 @@ class KarateBasicTest {
     }
     @Karate.Test
     Karate testBasic() {
-        return Karate.run("classpath:karate-test.feature").tags("");
+        return Karate.run("classpath:karate-test.feature").tags("jvargasn");
 
     }
 
