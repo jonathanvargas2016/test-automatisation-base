@@ -1,3 +1,5 @@
+import com.intuit.karate.Results;
+import com.intuit.karate.Runner;
 import com.intuit.karate.junit5.Karate;
 
 class KarateBasicTest {
@@ -6,7 +8,8 @@ class KarateBasicTest {
     }
     @Karate.Test
     Karate testBasic() {
-        return Karate.run("classpath:karate-test.feature");
+        return Karate.run("classpath:karate-test.feature").tags("");
+
     }
 
 }
