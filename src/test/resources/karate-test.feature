@@ -129,3 +129,20 @@ Feature: Marvel Api test
     * print response
     * match response contains { error: 'Character not found' }
 
+  @DeleteCharacter
+  Scenario: Delete a character (successful)
+    Given path 'characters', 345
+    When method DELETE
+    Then status 204
+    * print 'Character successfully deleted'
+
+
+  @DeleteNotExistentCharacter
+  Scenario: Delete a not existent character
+    Given path 'characters', '345'
+    When method DELETE
+    Then status 404
+    * print response
+    And match response contains { error: 'Character not found' }
+
+
