@@ -1,9 +1,24 @@
-Feature: Test de API súper simple
+@jvargsn @MarvelApi
+Feature: Marvel Api test
 
   Background:
-    * configure ssl = true
+    * url "http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/"
 
-  Scenario: Verificar que un endpoint público responde 200
-    Given url 'https://httpbin.org/get'
-    When method get
+  @GetAllCharacters
+  Scenario: Get all characters
+    Given path "characters"
+    When method GET
     Then status 200
+    * print response
+    And assert response.length > 0
+
+  @GetCharacterById
+  Scenario Outline: Get character by ID <id>
+    Given path 'characters', <id>
+    When method GET
+    Then status <statusCode>
+    * print response
+    Examples:
+      | id  | statusCode |
+      | 129 | 200        |
+      | 1   | 404        |
